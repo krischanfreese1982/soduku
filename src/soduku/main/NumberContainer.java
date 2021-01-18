@@ -3,23 +3,22 @@ package soduku.main;
 import java.util.ArrayList;
 
 public class NumberContainer {
-    boolean[] numbers;
+    boolean[] numberAvailableStatus;
     final int[] validNumbers = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
     public NumberContainer(){
-        this.numbers = new boolean[]{true,true,true,true,true,true,true,true,true};
+        this.numberAvailableStatus = new boolean[]{true,true,true,true,true,true,true,true,true};
     }
 
-    public boolean removeNumber(int toBeRemoved){
-        boolean result = false;
-        if(this.isValidNumber(toBeRemoved)) {
-            this.numbers[toBeRemoved-1] = false;
-            result = true;
+    public void setNumberAsUnavailable(int numberToBeUnAvailable) throws Exception {
+        if(this.isValidNumber(numberToBeUnAvailable)) {
+            this.numberAvailableStatus[numberToBeUnAvailable-1] = false;
+        }else{
+            throw new Exception(numberToBeUnAvailable+" is an invalid Number");
         }
-        return result;
     }
 
-    protected boolean isValidNumber(int toBeRemoved) {
+    public boolean isValidNumber(int toBeRemoved) {
         boolean result = false;
 
         if(toBeRemoved >= 1 && toBeRemoved <=9){
@@ -28,15 +27,14 @@ public class NumberContainer {
         return result;
     }
 
-    public boolean addNumber(int toBeAdded){
-        boolean result = false;
-        if(this.isValidNumber(toBeAdded)){
-            if(this.numbers[toBeAdded-1] == false){
-                this.numbers[toBeAdded-1] = true;
-                result = true;
+    public void setNumberAsAvailable(int numberToBeAvailable) throws Exception{
+        if(this.isValidNumber(numberToBeAvailable)){
+            if(!this.numberAvailableStatus[numberToBeAvailable - 1]){
+                this.numberAvailableStatus[numberToBeAvailable-1] = true;
             }
+        }else{
+            throw new Exception(numberToBeAvailable+" is an invalid Number");
         }
-        return result;
     }
 
     public int[] getValidNumbers(){
@@ -46,7 +44,7 @@ public class NumberContainer {
     public boolean isAvailableNumber(int number) {
         boolean result = false;
         if(this.isValidNumber(number)){
-            result = this.numbers[number-1];
+            result = this.numberAvailableStatus[number-1];
         }
         return result;
     }
@@ -54,12 +52,20 @@ public class NumberContainer {
     public ArrayList<Integer> getAvailableNumbers() {
         ArrayList<Integer> result = new ArrayList<Integer>();
 
-        for(int i=0; i < this.numbers.length; i++){
-            if(this.numbers[i] == true){
+        for(int i=0; i < this.numberAvailableStatus.length; i++){
+            if(this.numberAvailableStatus[i] == true){
                 int tmp = i+1;
                 result.add(tmp);
             }
         }
         return result;
+    }
+
+    public boolean isEmpty() {
+        boolean empty = false;
+        for( boolean numberAvailable: numberAvailableStatus){
+            empty = empty || !numberAvailable;
+        }
+        return empty;
     }
 }
